@@ -20,6 +20,7 @@
         <hr>
     </div>
     <div>
+        <h5>{{room_count}} rooms found</h5>
         <a href="{% url 'createRoom' %}">
             Create Room
         </a>
@@ -28,7 +29,7 @@
             {% for room in Rooms%}
                 <div>
                     <span>@{{room.host.username}}</span>
-                    <h5>{{room.id}} -- <a href="{% url 'Room' room.id %}">{{room.name}}</a></h5>
+                    <h4>{{room.id}} -- <a href="{% url 'Room' room.id %}">{{room.name}}</a></h4>
                     <small>{{room.topic}}</small>
                     <hr>
                 </div>
