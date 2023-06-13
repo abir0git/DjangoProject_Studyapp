@@ -1,0 +1,6 @@
+django-admin startproject <project-name> --- Create a new projet
+python manage.py runserver    		 --- Run online server
+python manage.py startapp <app-name>	 --- Create a new app
+python manage.py migrate		 --- Before creating database, and always after makemigrations (i.e. the below command)
+python manage.py makemigrations		 --- After creating model of a table in models.py
+python manage.py createsuperuser	 --- Create superuser i.e. admin
