@@ -1,10 +1,19 @@
 <a href="/">
     <h1>Logo</h1>
 </a>
+
 <form method="GET" action="{%url 'home'%}">
     <input type="text" name="q" placeholder="Search Rooms .."/>
 </form>
 <!-- All this code is included in home.html page -->
 <!-- This name q in input will go after home-->
 <!-- input with name q will be placed after action's url -->
+
+{% if request.user.is_authenticated %}
+<a href="{% url 'Logout' %}">Logout</a>
+<h4>Hi {{request.user.username}}</h4>
+{% else %}
+<a href="{% url 'Login' %}">Login</a>
+{% endif %}
+
 <hr>

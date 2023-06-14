@@ -3,6 +3,8 @@
 {% block content %}
 <h1>Room Template</h1>
 <h3>{{Room.description}}</h3>
+{% if request.user == Room.host %}
 <a href="{% url 'updateRoom' Room.id %}">Update details</a>
 <a href="{% url 'deleteRoom' Room.id %}">Delete</a>
+{% endif %}
 {% endblock %}
