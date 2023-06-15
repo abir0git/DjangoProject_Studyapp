@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms  import UserCreationForm
 # Create your views here.
 from django.http import HttpResponse
-from .models import Room, Topic
+from .models import Room, Topic, Message
 from django.contrib.auth.models import User
 from .forms import RoomForm
 
@@ -70,17 +70,47 @@ def home(request):
     # topic__name means name of topic , 2 _ used
     # contains have different search options
     topics = Topic.objects.all()
-    content = {'Rooms':rooms, 'Topics' : topics, 'room_count':rooms.count}
+    messg = Message.objects.filter(room__in=rooms)
+    # for all messages in the rooms (got from documentaion)
+    content = {'Rooms':rooms, 'Topics' : topics, 'room_count':rooms.count, 'Messages' : messg}
     return render(request, 'bas/home.html', content)
 
 def room(request, pk):
-    # room = None
-    # for r in rooms:
-    #     if(r['id'] == int(pk)):
-    #         room = r
     room = Room.objects.get(id=pk)
-    context = {'Room' : room}
+    message = room.message_set.all().order_by('-created')
+    participants = room.participants.all()
+    # Special method to find all message of that room
+    if(request.method == 'POST'):
+        if('body' in request.POST):
+            message = Message.objects.create(
+                user = request.user,
+                room = room,
+                body = request.POST.get('body')
+            )
+            room.participants.add(request.user)
+            return redirect('Room', pk=room.id)
+            # Room in uppercase because I give the name in urls.py
+        if('delete-message' in request.POST):
+            messg = Message.objects.get(id=request.POST['pkm'])
+            messg.delete()
+            return redirect('Room', pk=room.id)
+    context = {'Room' : room, 'Message' : message, 'Participants' : participants}
     return render(request, 'bas/room.html', context)
+
+def userProfile(request, pk):
+    user = User.objects.get(id=pk)
+    q = request.GET.get('q') if request.GET.get('q')!=None else ''
+    rooms = Room.objects.filter(
+        Q(host__username=user.username) &
+        (Q(topic__name__icontains=q) |
+        Q(name__icontains=q) |
+        Q(description__icontains=q) |
+        Q(host__username__icontains=q))
+    ) 
+    messg = user.message_set.all()
+    topics = Topic.objects.all()
+    context = {"user" : user, 'Rooms' : rooms, 'Messages' : messg, 'Topics' : topics}
+    return render(request, 'bas/profile.html', context)
 
 @login_required(login_url='/login') 
 def createroom(request):

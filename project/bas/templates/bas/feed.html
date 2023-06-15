@@ -1,0 +1,11 @@
+<hr>
+<div>
+    {% for room in Rooms%}
+        <div>
+            <a href="{% url 'userProfile' room.host.id %}">@{{room.host.username}}</a>
+            <h4>{{room.id}} -- <a href="{% url 'Room' room.id %}">{{room.name}}</a></h4>
+            <small>{{room.topic}}</small>
+            <hr>
+        </div>
+    {% endfor %}
+</div>

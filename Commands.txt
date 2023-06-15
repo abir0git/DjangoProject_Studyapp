@@ -4,3 +4,6 @@ python manage.py startapp <app-name>	 --- Create a new app
 python manage.py migrate		 --- Before creating database, and always after makemigrations (i.e. the below command)
 python manage.py makemigrations		 --- After creating model of a table in models.py
 python manage.py createsuperuser	 --- Create superuser i.e. admin
+
+Rules:
+Always a function is running in backend. The function is returning some rendered html page which is visible. If we click a link in page, first it go to urls.py and match with a link and then find the function in views.py and function goes on executing. if no we make a post request from that page it goes to that funtion and do what is written there.

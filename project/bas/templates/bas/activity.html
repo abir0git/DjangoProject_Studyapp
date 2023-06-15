@@ -1,0 +1,12 @@
+<h3>Recent activities</h3>
+{% for m in Messages %}
+<div>
+    <small><a href="{% url 'userProfile' m.user.id %}">@{{m.user}}</a> {{m.created|timesince}} ago</small>
+    <br>
+    <small>Replied to "{{m.room}}</small>
+    <br>
+    <span>{{m}}</span>
+    <!-- For __str__ version of the class -->
+    <hr>
+</div>
+{% endfor %}
