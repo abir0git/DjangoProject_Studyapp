@@ -1,17 +1,12 @@
 {% extends 'main.html' %}
 
 {% block content %}
-<style>
-    .profile-container{
-        display: grid;
-        grid-template-columns: 1fr 3fr 1fr;
-    }
-</style>
 
 <div>
     <h1>{{user.username}}</h1>
 </div>
-<div class="profile-container">
+<main class="layout layout--3">
+<div class="container">
     <div>
         {% url 'userProfile' user.id as the_url %}
         {% include 'bas/topics.html' with link=the_url %}
@@ -23,4 +18,5 @@
         {% include 'bas/activity.html' %}
     </div>
 </div>
+</main>
 {% endblock %}

@@ -1,8 +1,32 @@
-<h3>Browse Topics</h3>
-<a href="{{link}}">All</a>
-
-{% for topic in Topics%}
-    <div>
-        <a href="{{link}}?q={{topic.name}}">{{topic.name}}</a>
+<div class="topics">
+    <div class="topics__header">
+        <h2>Browse Topics</h2>
     </div>
-{% endfor %}
+    <ul class="topics__list">
+        <li>
+        <a href="{{link}}" class="active">All <span>{{total_room}}</span></a>
+        </li>
+        {% for topic in Topics %}
+        <li>
+        <a href="{{link}}?q={{topic.topic.name}}">{{topic.topic.name}} 
+            <span>{{topic.count}}</span></a>
+        </li>
+        {% endfor %}
+    </ul>
+    <a class="btn btn--link" href="topics.html">
+        More
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+        <title>chevron-down</title>
+        <path d="M16 21l-13-13h-3l16 16 16-16h-3l-13 13z"></path>
+        </svg>
+    </a>
+</div>
+
+
+
+
+
+
+
+
+

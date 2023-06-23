@@ -30,7 +30,7 @@ class Room(models.Model):
         ordering = ['-updated', '-created']
 
     def __str__(self):
-        return self.name
+        return self.description[:20]
     
 class Message(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
