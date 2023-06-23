@@ -1,0 +1,69 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<style>
+    .room-container{
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+    }
+</style>
+
+<div class="room-container">
+    <div>
+        <h1>Room Template</h1>
+        <h3>{{Room.description}}</h3>
+
+        <div class="commemt-wrapper">
+            <h3>Conversation</h3>
+            <hr>
+            
+            {% if request.user.is_authenticated %}
+            <div class="comment-form">
+                <form  method="POST" action="">
+                    {% csrf_token %}
+                    <input type="text" name="body" placeholder="Write here"/>
+                </form>
+                <hr>
+                <br>
+            </div>
+            {% endif %}
+
+            {% if Message %}
+            {% for m in Message %}
+            <div>
+                {% if request.user == m.user %}
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="pkm" value="{{m.id}}" />
+                    <input type="submit" value="Delete" name="delete-message"/>
+                </form>
+                {% endif %}
+                <small><a href="{% url 'userProfile' m.user.id %}">@{{m.user}}</a>  {{m.created|timesince}} ago</small>
+                <!-- filter for time -->
+                <br>
+                <span>{{m.body}}</span>
+                <br>
+                <hr>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div>
+                <span>No conversation yet!</span>
+                <hr>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <div>
+        <h3>Participants</h3>
+        <hr>
+        {% for p in Participants %}
+            <div>
+                <span>@{{p.username}}</span>
+            </div>
+            {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

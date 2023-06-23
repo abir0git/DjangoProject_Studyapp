@@ -1,0 +1,22 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<div>
+    <h1>{{user.username}}</h1>
+</div>
+<main class="layout layout--3">
+<div class="container">
+    <div>
+        {% url 'userProfile' user.id as the_url %}
+        {% include 'bas/topics.html' with link=the_url %}
+    </div>
+    <div>
+        {%include 'bas/feed.html' %}
+    </div>
+    <div>
+        {% include 'bas/activity.html' %}
+    </div>
+</div>
+</main>
+{% endblock %}

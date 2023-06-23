@@ -21,6 +21,7 @@
         <h2>Study Room</h2>
         <p>{{Rooms.count}} Room{% if Rooms.count > 1 %}s{% endif %} available</p>
       </div>
+      {% if page == home %}
       <a class="btn btn--main" href="{% url 'createRoom' %}">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
           <title>add</title>
@@ -30,6 +31,7 @@
         </svg>
         Create Room
       </a>
+      {% endif %}
     </div>
     {% for room in Rooms%}
     <div class="roomListRoom">

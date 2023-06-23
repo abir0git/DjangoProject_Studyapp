@@ -47,15 +47,24 @@ def registerUser(request):
     page = 'register'
     form = UserCreationForm()
     if(request.method == 'POST'):
-        form = UserCreationForm(request.POST)
-        if(form.is_valid()):
-            user = form.save(commit=False) # so getting user as return value
-            # user.username = user.username.lower()
-            user.save()
-            login(request, user)
-            return redirect('home')
+        # form = UserCreationForm(request.POST)
+        # if(form.is_valid()):
+        #     user = form.save(commit=False) # so getting user as return value
+        #     # user.username = user.username.lower()
+        username = request.POST.get('username')
+        if(User.objects.filter(username=username).exists()):
+            messages.error(request, f"Username already exists")
         else:
-            messages.error(request, f'An error occured')
+            fname = request.POST.get('fullname').split()[0]
+            lname = request.POST.get('fullname')[len(fname)+1:]
+            user = User.objects.create(
+                username = username,
+                password = request.POST.get('password'),
+                first_name = fname,
+                last_name = lname,
+            )
+        login(request, user)
+        return redirect('home')
     context = {'page' : page, 'form' : form}
     return render(request, 'bas/login_reg.html', context)
 
@@ -126,28 +135,43 @@ def userProfile(request, pk):
 
 @login_required(login_url='/login') 
 def createroom(request):
-    form = RoomForm()
+    # form = RoomForm()
+    topics = Topic.objects.all()
     if(request.method == 'POST'):
-        form = RoomForm(request.POST)
-        form.instance.host = request.user
-        if(form.is_valid):
-            form.save()
-            return redirect('home')
-    context = {'form' : form}
+        # form = RoomForm(request.POST)
+        # form.instance.host = request.user
+        # if(form.is_valid):
+        #     form.save()
+        #     return redirect('home')
+        topic, created = Topic.objects.get_or_create(name=request.POST.get('topic'))
+        room = Room.objects.create(
+            host = request.user,
+            name = request.POST.get('room_name'),
+            description = request.POST.get('room_about'),
+            topic = topic
+        )
+        return redirect(f"/room/{room.id}")
+    context = {'Topics' : topics, 'type' : 'create'}
     return render(request, 'bas/room_form.html', context)
 
 @login_required(login_url='/login') 
 def updateroom(request, pk):
     room = Room.objects.get(id=pk)
-    form = RoomForm(instance=room)
+    topics = Topic.objects.all()
+    # form = RoomForm(instance=room)
     if(request.user != room.host):
         return HttpResponse("You are not allowed")
     if(request.method == 'POST'):
-        form = RoomForm(request.POST, instance=room) # to update
-        if(form.is_valid):
-            form.save()
-            return redirect(f"/room/{room.id}")
-    context = {'form' : form}
+        # form = RoomForm(request.POST, instance=room) # to update
+        # if(form.is_valid):
+        #     form.save()
+        topic, created = Topic.objects.get_or_create(name=request.POST.get('topic'))
+        room.name = request.POST.get('room_name')
+        room.description = request.POST.get('room_about')
+        room.topic = topic
+        room.save()
+        return redirect(f"/room/{room.id}")
+    context = {'Topics' : topics, 'type' : 'update', 'Room' : room}
     return render(request, 'bas/room_form.html', context)
 
 @login_required(login_url='/login') 
@@ -160,3 +184,7 @@ def deleteRoom(request, pk):
         room.delete()
         return redirect('home')
     return render(request, 'bas/delete.html', context)
+
+@login_required(login_url='/login') 
+def updateUser(request, pk):
+    return render(request, '')

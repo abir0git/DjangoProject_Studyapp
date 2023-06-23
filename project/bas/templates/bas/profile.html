@@ -2,21 +2,45 @@
 
 {% block content %}
 
-<div>
-    <h1>{{user.username}}</h1>
-</div>
-<main class="layout layout--3">
-<div class="container">
-    <div>
+  <main class="profile-page layout layout--3">
+    <div class="container">
+      <!-- Topics Start -->
         {% url 'userProfile' user.id as the_url %}
         {% include 'bas/topics.html' with link=the_url %}
+      <!-- Topics End -->
+
+      <!-- Room List Start -->
+      <div class="roomList">
+        <div class="profile">
+          <div class="profile__avatar">
+            <div class="avatar avatar--large active">
+              <img src="https://randomuser.me/api/portraits/men/11.jpg" />
+            </div>
+          </div>
+          <div class="profile__info">
+            <h3>{{user.first_name}} {{user.last_name}}</h3>
+            <p><a href="{% url 'userProfile' user.id %}">@{{user.username}}</a></p>
+            {% if request.user.id == user.id %}
+            <a href="edit-user.html" class="btn btn--main btn--pill">Edit Profile</a>
+            {% endif %}
+          </div>
+          <div class="profile__about">
+            <h3>About</h3>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequuntur illo tenetur
+              facilis sunt nemo debitis quisquam hic atque aut? Ducimus alias placeat optio
+              accusamus repudiandae quis ab ex exercitationem rem?
+            </p>
+          </div>
+        </div>
+        {%include 'bas/feed.html' with page='profile' %}
+      </div>
+      <!-- Room List End -->
+
+      <!-- Activities Start -->
+      {% include 'bas/activity.html' %}
+      <!-- Activities End -->
     </div>
-    <div>
-        {%include 'bas/feed.html' %}
-    </div>
-    <div>
-        {% include 'bas/activity.html' %}
-    </div>
-</div>
-</main>
+  </main>
+
 {% endblock %}
