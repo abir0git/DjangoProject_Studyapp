@@ -8,7 +8,7 @@ from django.contrib.auth.forms  import UserCreationForm
 from django.http import HttpResponse
 from .models import Room, Topic, Message
 from django.contrib.auth.models import User
-from .forms import RoomForm
+from .forms import RoomForm, UserForm
 
 # rooms = [
 #     {'id' : 1, 'name' : 'abir'},
@@ -84,8 +84,9 @@ def home(request):
     Topics = []
     for topic in topics:
         cnt = Room.objects.filter(
-        Q(topic__name=topic.name)).count
-        Topics.append({'topic' : topic, 'count' : cnt})
+        Q(topic__name=topic.name)).count()
+        if(cnt > 0):
+            Topics.append({'topic' : topic, 'count' : cnt})
     content = {'Rooms':rooms, 'Topics' : Topics, 
                'total_room':Room.objects.all().count, 'Messages' : messg}
     return render(request, 'bas/home.html', content)
@@ -127,8 +128,9 @@ def userProfile(request, pk):
     Topics = []
     for topic in topics:
         cnt = Room.objects.filter(
-        Q(host__username=user.username) & Q(topic__name=topic.name)).count
-        Topics.append({'topic' : topic, 'count' : cnt})
+        Q(host__username=user.username) & Q(topic__name=topic.name)).count()
+        if(int(cnt) > 0):
+            Topics.append({'topic' : topic, 'count' : cnt})
     context = {"user" : user, 'Rooms' : rooms, 'Messages' : messg, 'Topics' : Topics,
                'total_room' : Room.objects.filter(host__username=user.username).count, }
     return render(request, 'bas/profile.html', context)
@@ -163,7 +165,7 @@ def updateroom(request, pk):
         return HttpResponse("You are not allowed")
     if(request.method == 'POST'):
         # form = RoomForm(request.POST, instance=room) # to update
-        # if(form.is_valid):
+        # if(form.is_valid()):
         #     form.save()
         topic, created = Topic.objects.get_or_create(name=request.POST.get('topic'))
         room.name = request.POST.get('room_name')
@@ -187,4 +189,12 @@ def deleteRoom(request, pk):
 
 @login_required(login_url='/login') 
 def updateUser(request, pk):
-    return render(request, '')
+    user = request.user
+    form = UserForm(instance=request.user)
+    if(request.method == "POST"):
+        form = UserForm(request.POST, instance=user) # to update
+        if(form.is_valid()):
+            form.save()
+            return redirect(f'/profile/{user.id}/')
+    content = {'form' : form}
+    return render(request, 'bas/update_user.html', content)
