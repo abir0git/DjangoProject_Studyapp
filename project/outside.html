@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rooms</title>
+</head>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
+    $(document).on('submit', '#myForm', function (event) {
+
+    event.preventDefault();
+    var data = {
+        myTextToPass: $('#sometext').val()
+    }
+    // LOOK AT ME! BETWEEN HERE AND
+    var token =  $('input[name="csrfToken"]').attr('value')
+        $.ajaxSetup({
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('Csrf-Token', token);
+            }
+        });
+    // HERE
+    var route = jsRoutes.controllers.DashboardController.postNewProject()
+    $.ajax({
+        url: route.url,
+        type: route.type,
+        data : JSON.stringify(data),
+        contentType : 'application/json',
+        success: function (data) {     },
+        error: function (data) {   }
+            })
+    });
+</script>
+<body>
+    <h1>My rooms</h1>
+    <div id="room-container">
+    </div>
+    
+</body>
+
+    
+    
+<script>    
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+    // console.log(csrftoken)
+
+    let roomContainer = document.getElementById('room-container') 
+
+    let getRooms = async () => {
+        let response = await fetch('http://127.0.0.1:8000/api/rooms/')
+        let rooms = await response.json()
+        console.log('Rooms : ', rooms)
+        for(let i = 0; i < rooms.length ; i++)
+        {
+            room = rooms[i]
+            let row = `<div>
+                        <h3>${room.name}</h3>
+                        </div>
+                        <form action="http://127.0.0.1:8000/api/rooms/review" method="POST" id="myForm">
+                        <input name="csrfmiddlewaretoken" value="${csrftoken}" type="hidden">
+                        <input type="hidden" name="pkr" value="${room.id}" />
+                        <textarea name="review" id="" cols="30" rows="10"></textarea>
+                        <input type="submit" name="add-review">
+                        </form>
+                        `
+            roomContainer.innerHTML += row
+        }
+    }
+    getRooms()
+    
+</script>
+</html>

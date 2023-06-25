@@ -25,6 +25,7 @@ class Room(models.Model):
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     # id = 
+    outside_review = models.TextField(null=True, blank=True)
 
     class Meta:
         ordering = ['-updated', '-created']
