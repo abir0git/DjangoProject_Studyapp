@@ -19,18 +19,23 @@
                 </div>
             </div>
             <div class="layout__body">
-                <form class="form" action="" method="POST">
+            <form class="form" action="" method="POST" enctype="multipart/form-data">
+                <!-- need for submitting files -->
                   {% csrf_token %}
-                    <!-- <div class="form__group">
-                        <label for="profile_pic">Avatar</label>
-                        <input id="profile_pic" name="profile_pic" type="file" />
-                    </div> -->
+            <div class="form__group">
+                <label for="profile_pic">Profile Picture</label>
+                <input id="profile_pic" name="profile_pic" type="file" accept="image/*"/>
+            </div>
           {% for field in form %}
           <div class="form__group">
             <label for="username">{{field.label}}</label>
             {{field}}
           </div>
           {% endfor %}
+          <div class="form__group">
+            <span>Bio</span>
+            <textarea name="bio" id="bio" cols="30" rows="10">{{Profiles.0.bio}}</textarea>
+          </div>
                     <div class="form__action">
                         <a class="btn btn--dark" href="{{request.META.HTTP_REFERER}}">Cancel</a>
                         <button class="btn btn--main" type="submit">Update</button>

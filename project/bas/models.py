@@ -47,4 +47,7 @@ class Message(models.Model):
     class Meta:
         ordering = ['-updated', '-created']
     
-
+class Profile(models.Model):
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    bio = models.TextField(null=True)
+    avatar = models.ImageField(null=True, default="avatar.svg")

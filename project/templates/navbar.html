@@ -32,7 +32,11 @@
         <div class="header__user">
         <a href="{% url 'userProfile' request.user.id %}">
             <div class="avatar avatar--medium active">
-            <img src="{% static 'images/avatar.svg' %}" />
+            {% for profile in Profiles%}
+            {% if profile.user.id == request.user.id %}
+            <img src="{{profile.avatar.url}}" />
+            {% endif %}
+            {% endfor %}
             </div>
             <p>{{request.user.first_name}} {{request.user.last_name}}<span>@{{request.user.username}}</span></p>
         </a>
@@ -45,7 +49,7 @@
         </div>
 
         <div class="dropdown-menu" id="dropdown-menu">
-            <a href="settings.html" class="dropdown-link"
+            <a href="{% url 'userUpdate' request.user.id %}" class="dropdown-link"
                 ><svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
                 <title>tools</title>
                 <path
@@ -71,7 +75,7 @@
         <!-- Not Logged In -->
         <a href="{% url 'Login' %}">
         <img src="{% static 'images/avatar.svg' %}" />
-        <p>Login</p>
+        <p>Login/Signup</p>
         </a>
         {% endif %}
     </nav>

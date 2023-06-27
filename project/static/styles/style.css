@@ -57,7 +57,6 @@ img {
 }
 
 a {
-  display: inline-block;
   color: var(--color-main);
   text-decoration: none;
 }
@@ -190,6 +189,7 @@ a {
   height: 8rem;
   border-radius: 50%;
 }
+
 
 .avatar.avatar--large:after {
   width: 1rem;
@@ -1162,4 +1162,22 @@ a {
   font-weight: 500;
   color: var(--color-main);
   font-weight: 1.4rem;
+}
+
+.password-container{
+  width: 4em;
+  position: relative;
+}
+.password-container input[type="password"],
+.password-container input[type="text"]{
+  width: 28em;
+  padding: 9px 36px 9px 12px;
+  box-sizing: border-box;
+}
+.fa-eye{
+  position: absolute;
+  top: 32%;
+  right: -530%;
+  cursor: pointer;
+  color: lightgray;
 }

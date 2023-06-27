@@ -38,9 +38,11 @@
       <div class="roomListRoom__header">
         <a href="{% url 'userProfile' room.host.id %}" class="roomListRoom__author">
           <div class="avatar avatar--small">
-            <img src="https://randomuser.me/api/portraits/women/11.jpg" />
+            {% include 'bas/profile_image.html' with user_id=room.host.id %}
           </div>
           <span>@{{room.host.username}}</span>
+          <!-- <h1>{{user_id}}</h1>
+          <h1>{{Profiles.user_id.bio}}</h1> -->
         </a>
         <div class="roomListRoom__actions">
           <span>{{room.updated|timesince}} ago</span>
@@ -78,14 +80,3 @@
   </div>
 
 
-<!-- <hr>
-<div>
-    {% for room in Rooms%}
-        <div>
-            <a href="{% url 'userProfile' room.host.id %}">@{{room.host.username}}</a>
-            <h4>{{room.id}} -- <a href="{% url 'Room' room.id %}">{{room.name}}</a></h4>
-            <small>{{room.topic}}</small>
-            <hr>
-        </div>
-    {% endfor %}
-</div>  -->

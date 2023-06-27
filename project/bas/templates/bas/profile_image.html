@@ -1,0 +1,8 @@
+
+{% for profile in Profiles%}
+{% if profile.user.id == user_id %}
+<img src="{{profile.avatar.url}}" />
+{% endif %}
+{% endfor %}
+
+

@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms  import UserCreationForm
 # Create your views here.
 from django.http import HttpResponse
-from .models import Room, Topic, Message
+from .models import Room, Topic, Message, Profile
 from django.contrib.auth.models import User
 from .forms import RoomForm, UserForm
 
@@ -63,8 +63,9 @@ def registerUser(request):
                 first_name = fname,
                 last_name = lname,
             )
-        login(request, user)
-        return redirect('home')
+            profile = Profile.objects.create(user=user)
+            login(request, user)
+            return redirect('home')
     context = {'page' : page, 'form' : form}
     return render(request, 'bas/login_reg.html', context)
 
@@ -87,8 +88,11 @@ def home(request):
         Q(topic__name=topic.name)).count()
         if(cnt > 0):
             Topics.append({'topic' : topic, 'count' : cnt})
+
+    users = User.objects.all()
+    Profiles = Profile.objects.all()
     content = {'Rooms':rooms, 'Topics' : Topics, 
-               'total_room':Room.objects.all().count, 'Messages' : messg}
+               'total_room':Room.objects.all().count, 'Messages' : messg, 'Profiles' : Profiles}
     return render(request, 'bas/home.html', content)
 
 def room(request, pk):
@@ -110,7 +114,8 @@ def room(request, pk):
             messg = Message.objects.get(id=request.POST['pkm'])
             messg.delete()
             return redirect('Room', pk=room.id)
-    context = {'Room' : room, 'Message' : message, 'Participants' : participants}
+    Profiles = Profile.objects.all()
+    context = {'Room' : room, 'Message' : message, 'Participants' : participants, 'Profiles' : Profiles}
     return render(request, 'bas/room.html', context)
 
 def userProfile(request, pk):
@@ -131,8 +136,10 @@ def userProfile(request, pk):
         Q(host__username=user.username) & Q(topic__name=topic.name)).count()
         if(int(cnt) > 0):
             Topics.append({'topic' : topic, 'count' : cnt})
+    Profiles = Profile.objects.all()
     context = {"user" : user, 'Rooms' : rooms, 'Messages' : messg, 'Topics' : Topics,
-               'total_room' : Room.objects.filter(host__username=user.username).count, }
+               'total_room' : Room.objects.filter(host__username=user.username).count,
+                'Profiles' : Profiles }
     return render(request, 'bas/profile.html', context)
 
 @login_required(login_url='/login') 
@@ -190,11 +197,18 @@ def deleteRoom(request, pk):
 @login_required(login_url='/login') 
 def updateUser(request, pk):
     user = request.user
+    profile = Profile.objects.get(user=user)
     form = UserForm(instance=request.user)
     if(request.method == "POST"):
         form = UserForm(request.POST, instance=user) # to update
         if(form.is_valid()):
+            profile.bio = request.POST.get('bio')
+            try:
+                profile.avatar = request.FILES['profile_pic']
+            except:
+                pass
+            profile.save()
             form.save()
             return redirect(f'/profile/{user.id}/')
-    content = {'form' : form}
+    content = {'form' : form, 'Profiles' : [profile]} # need Profiles for navbar view
     return render(request, 'bas/update_user.html', content)
