@@ -13,12 +13,25 @@
   <body>
     {% include 'navbar.html' %}
 
-    {% if messages %}
+    <!-- {% if messages %}
     <ul class="messages">
         {% for message in messages %}
         <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
         {% endfor %}
     </ul>
+    {% endif %}-->
+
+    {% if messages %} 
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        {% for message in messages %}
+        <p class="modal-text">{{message}}</p>
+        {% endfor %}
+      </div>
+    </div>
     {% endif %}
 
     {% block content %}
